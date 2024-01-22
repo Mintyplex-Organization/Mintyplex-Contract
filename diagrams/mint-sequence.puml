@@ -1,0 +1,18 @@
+@startuml
+
+actor Creator as C
+participant "NFT Contract" as NC
+
+C -> C++: calculateMetadataHash(metadata)
+
+C -> NC++: mintNFT(tokenId, metadataHash)
+
+activate NC #FFBB00
+
+NC -> NC++: _mint(Creator, tokenId)
+NC -> NC++: _setTokenURI(tokenId, metadataHash)
+
+NC --> C--: tokenId
+deactivate NC
+
+@enduml

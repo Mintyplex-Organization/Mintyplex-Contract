@@ -1,0 +1,34 @@
+@startuml
+
+actor Creator as C
+actor Buyer as B
+
+participant "NFT Contract" as NC
+
+C -> C++: generateMetadata()
+
+C -> C++: metadataHash = hash(metadata)
+
+C -> NC++: mintNFT(metadataHash)
+
+activate NC #FFBB00
+NC -> NC++: _mint(C)
+NC -> NC++: _setTokenURI(hash)
+NC --> C--: tokenId
+deactivate NC
+
+C -> NC++: setApproval(B)
+activate NC #FFBB00
+
+NC -> NC++: _approve(B, tokenId)
+NC --> C--:
+
+deactivate NC
+
+B -> NC++: transferFrom(C, B, tokenId)
+activate NC #FFBB00
+NC -> NC++: _transfer(C, B, tokenId)
+NC --> B--:
+deactivate NC
+
+@enduml

@@ -1,0 +1,13 @@
+@startuml
+
+title NFT Contract Component Diagram
+
+interface "Creator" as CR
+interface "Buyer" as BY
+
+component "NFT Contract" as NC
+
+CR -> NC
+BY -> NC
+
+@enduml
