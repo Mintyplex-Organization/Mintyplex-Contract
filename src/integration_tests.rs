@@ -131,14 +131,14 @@ fn proper_instantiation() {
     // it worked, let's query the state
     // let res = contract.minter(deps.as_ref()).unwrap();
     // assert_eq!(Some(MINTER.to_string()), res.minter);
-    // let info = contract.contract_info(deps.as_ref()).unwrap();
-    // assert_eq!(
-    //     info,
-    //     ContractInfoResponse {
-    //         name: CONTRACT_NAME.to_string(),
-    //         symbol: SYMBOL.to_string(),
-    //     }
-    // );
+    let info = contract.contract_info(deps.as_ref()).unwrap();
+    assert_eq!(
+        info,
+        ContractInfoResponse {
+            name: CONTRACT_NAME.to_string(),
+            symbol: SYMBOL.to_string(),
+        }
+    );
 
     // let withdraw_address = contract
     //     .withdraw_address
