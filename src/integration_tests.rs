@@ -83,9 +83,9 @@ use cw721::{
 };
 use cw_ownable::OwnershipError;
 
-use crate::msg::InstantiateMsg;
+use crate::msg::{ExecuteMsg, InstantiateMsg};
 use crate::state::MintyPlexContract;
-use crate::Extension;
+use crate::{ContractError, Extension};
 
 // use crate::{
 //     ContractError, Cw721Contract, ExecuteMsg, Extension, InstantiateMsg, MinterResponse, QueryMsg,
@@ -152,4 +152,75 @@ fn proper_instantiation() {
     // // list the token_ids
     // let tokens = contract.all_tokens(deps.as_ref(), None, None).unwrap();
     // assert_eq!(0, tokens.tokens.len());
+}
+
+#[test]
+fn minting() {
+    let mut deps = mock_dependencies();
+    let contract = setup_contract(deps.as_mut());
+
+    let token_id = "maggi".to_string();
+    let token_uri = "http://maggi.com.ng/maggi.png".to_string();
+
+    let mint_msg = ExecuteMsg::Mint {
+        token_id: token_id.clone(),
+        owner: String::from("Cook"),
+        token_uri: Some(token_uri.clone()),
+        extension: None,
+    };
+
+    let allowed = mock_info(MINTER, &[]);
+    let _ = contract
+        .execute(deps.as_mut(), mock_env(), allowed, mint_msg)
+        .unwrap();
+
+    // ensure num tokens increases
+    let count = contract.num_tokens(deps.as_ref()).unwrap();
+    assert_eq!(1, count.count);
+
+    // unknown nft returns error
+    let _ = contract
+        .nft_info(deps.as_ref(), "unknown".to_string())
+        .unwrap_err();
+
+    // this nft info is correct
+    let info = contract.nft_info(deps.as_ref(), token_id.clone()).unwrap();
+    assert_eq!(
+        info,
+        NftInfoResponse::<Extension> {
+            token_uri: Some(token_uri),
+            extension: None,
+        }
+    );
+
+    // owner info is correct
+    let owner = contract
+        .owner_of(deps.as_ref(), mock_env(), token_id.clone(), true)
+        .unwrap();
+    assert_eq!(
+        owner,
+        OwnerOfResponse {
+            owner: String::from("medusa"),
+            approvals: vec![],
+        }
+    );
+
+    // Cannot mint same token_id again
+    let mint_msg2 = ExecuteMsg::Mint {
+        token_id: token_id.clone(),
+        owner: String::from("hercules"),
+        token_uri: None,
+        extension: None,
+    };
+
+    let allowed = mock_info(MINTER, &[]);
+    let err = contract
+        .execute(deps.as_mut(), mock_env(), allowed, mint_msg2)
+        .unwrap_err();
+    assert_eq!(err, ContractError::Claimed {});
+
+    // list the token_ids
+    let tokens = contract.all_tokens(deps.as_ref(), None, None).unwrap();
+    assert_eq!(1, tokens.tokens.len());
+    assert_eq!(vec![token_id], tokens.tokens);
 }

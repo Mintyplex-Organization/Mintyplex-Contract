@@ -4,7 +4,7 @@ use cw_ownable::OwnershipError;
 use serde::{de::DeserializeOwned, Serialize};
 
 use crate::{
-    msg::InstantiateMsg,
+    msg::{ExecuteMsg, InstantiateMsg},
     state::{MintyPlexContract, TokenInfo},
     ContractError,
 };
@@ -34,6 +34,24 @@ where
         // }
 
         Ok(Response::default())
+    }
+
+    pub fn execute(
+        &self,
+        deps: DepsMut,
+        env: Env,
+        info: MessageInfo,
+        msg: ExecuteMsg<T>,
+    ) -> Result<Response<C>, ContractError> {
+        match msg {
+            ExecuteMsg::Mint {
+                token_id,
+                owner,
+                token_uri,
+                extension,
+            } => self.mint(deps, info, token_id, owner, token_uri, extension),
+            ExecuteMsg::UpdateOwnership(_) => todo!(),
+        }
     }
 }
 

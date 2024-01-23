@@ -18,7 +18,10 @@ pub const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
 pub mod entry {
     use cosmwasm_std::{DepsMut, Empty, Env, MessageInfo, Response};
 
-    use self::{msg::InstantiateMsg, state::MintyPlexContract};
+    use self::{
+        msg::{ExecuteMsg, InstantiateMsg},
+        state::MintyPlexContract,
+    };
 
     use super::*;
     #[cfg(not(feature = "library"))]
@@ -35,5 +38,16 @@ pub mod entry {
 
         let tract = MintyPlexContract::<Extension, Empty, Empty, Empty>::default();
         tract.instantiate(deps, env, info, msg)
+    }
+
+    #[cfg_attr(not(feature = "library"), entry_point)]
+    pub fn execute(
+        deps: DepsMut,
+        env: Env,
+        info: MessageInfo,
+        msg: ExecuteMsg<Extension>,
+    ) -> Result<Response, ContractError> {
+        let tract = MintyPlexContract::<Extension, Empty, Empty, Empty>::default();
+        tract.execute(deps, env, info, msg)
     }
 }
