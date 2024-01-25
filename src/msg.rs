@@ -25,6 +25,9 @@ pub enum ExecuteMsg<T> {
         /// Any custom extension used by this contract
         extension: T,
     },
+
+    /// Transfer is a base message to move a token to another account without triggering actions
+    TransferNft { recipient: String, token_id: String },
 }
 
 #[cw_serde]

@@ -51,6 +51,10 @@ where
                 extension,
             } => self.mint(deps, info, token_id, owner, token_uri, extension),
             ExecuteMsg::UpdateOwnership(_) => todo!(),
+            ExecuteMsg::TransferNft {
+                recipient,
+                token_id,
+            } => self.transfer_nft(deps, env, info, recipient, token_id),
         }
     }
 }
