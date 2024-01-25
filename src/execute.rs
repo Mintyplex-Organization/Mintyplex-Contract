@@ -20,7 +20,7 @@ where
         &self,
         deps: DepsMut,
         _env: Env,
-        info: MessageInfo,
+        _info: MessageInfo,
         msg: InstantiateMsg,
     ) -> Result<Response, ContractError> {
         let contract_info = ContractInfoResponse {
@@ -223,7 +223,7 @@ where
         info: MessageInfo,
         spender: String,
         token_id: String,
-        expires: Option<Expiration>,
+        _expires: Option<Expiration>,
     ) -> Result<Response<C>, Self::Err> {
         self._update_approvals(deps, &env, &info, &spender, &token_id, false, None)?;
 
@@ -279,7 +279,7 @@ where
     fn revoke_all(
         &self,
         deps: DepsMut,
-        env: Env,
+        _env: Env,
         info: MessageInfo,
         operator: String,
     ) -> Result<Response<C>, Self::Err> {

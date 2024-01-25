@@ -1,6 +1,6 @@
 use std::marker::PhantomData;
 
-use cw721::{Approval, ContractInfoResponse, Cw721, Expiration};
+use cw721::{Approval, ContractInfoResponse, Expiration};
 use schemars::JsonSchema;
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 
