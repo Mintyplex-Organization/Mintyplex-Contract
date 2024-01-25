@@ -164,7 +164,7 @@ fn minting() {
 
     let mint_msg = ExecuteMsg::Mint {
         token_id: token_id.clone(),
-        owner: String::from("Cook"),
+        owner: String::from("cook"),
         token_uri: Some(token_uri.clone()),
         extension: None,
     };
@@ -200,7 +200,7 @@ fn minting() {
     assert_eq!(
         owner,
         OwnerOfResponse {
-            owner: String::from("medusa"),
+            owner: String::from("cook"),
             approvals: vec![],
         }
     );
