@@ -55,6 +55,9 @@ pub enum QueryMsg<Q: JsonSchema> {
     // GetCount returns the current count as a json-encoded number
     #[returns(GetCountResponse)]
     GetCount {},
+    /// Total number of tokens issued
+    #[returns(cw721::NumTokensResponse)]
+    NumTokens {},
 
     /// With MetaData Extension.
     /// Returns top-level metadata about the contract
@@ -65,6 +68,35 @@ pub enum QueryMsg<Q: JsonSchema> {
     /// but directly from the contract
     #[returns(cw721::NftInfoResponse<Q>)]
     NftInfo { token_id: String },
+    /// With MetaData Extension.
+    /// Returns the result of both `NftInfo` and `OwnerOf` as one query as an optimization
+    /// for clients
+    #[returns(cw721::AllNftInfoResponse<Q>)]
+    AllNftInfo {
+        token_id: String,
+        /// unset or false will filter out expired approvals, you must set to true to see them
+        include_expired: Option<bool>,
+    },
+
+    /// With Enumerable extension.
+    /// Returns all tokens owned by the given address, [] if unset.
+    #[returns(cw721::TokensResponse)]
+    Tokens {
+        owner: String,
+        start_after: Option<String>,
+        limit: Option<u32>,
+    },
+    /// With Enumerable extension.
+    /// Requires pagination. Lists all token_ids controlled by the contract.
+    #[returns(cw721::TokensResponse)]
+    AllTokens {
+        start_after: Option<String>,
+        limit: Option<u32>,
+    },
+
+    /// Return the minter
+    #[returns(MinterResponse)]
+    Minter {},
 
     /// Extension query
     #[returns(())]
@@ -75,4 +107,10 @@ pub enum QueryMsg<Q: JsonSchema> {
 #[cw_serde]
 pub struct GetCountResponse {
     pub count: i32,
+}
+
+/// Shows who can mint these tokens
+#[cw_serde]
+pub struct MinterResponse {
+    pub minter: Option<String>,
 }

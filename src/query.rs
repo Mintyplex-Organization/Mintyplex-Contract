@@ -13,7 +13,7 @@ use cw_storage_plus::Bound;
 use serde::{de::DeserializeOwned, Serialize};
 
 use crate::{
-    msg::QueryMsg,
+    msg::{MinterResponse, QueryMsg},
     state::{MintyPlexContract, TokenInfo},
 };
 
@@ -261,11 +261,41 @@ where
                 include_expired.unwrap_or(false),
             )?),
             QueryMsg::GetCount {} => todo!(),
-            QueryMsg::ContractInfo {} => todo!(),
-            QueryMsg::NftInfo { token_id } => todo!(),
-            QueryMsg::Extension { msg } => todo!(),
-            QueryMsg::Ownership {} => todo!(),
+            QueryMsg::ContractInfo {} => to_json_binary(&self.contract_info(deps)?),
+            QueryMsg::NftInfo { token_id } => to_json_binary(&self.nft_info(deps, token_id)?),
+            QueryMsg::Extension { msg: _ } => Ok(Binary::default()),
+            QueryMsg::Ownership {} => to_json_binary(&Self::ownership(deps)?),
+            QueryMsg::NumTokens {} => to_json_binary(&self.num_tokens(deps)?),
+            QueryMsg::AllNftInfo {
+                token_id,
+                include_expired,
+            } => to_json_binary(&self.all_nft_info(
+                deps,
+                env,
+                token_id,
+                include_expired.unwrap_or(false),
+            )?),
+            QueryMsg::Tokens {
+                owner,
+                start_after,
+                limit,
+            } => to_json_binary(&self.tokens(deps, owner, start_after, limit)?),
+            QueryMsg::AllTokens { start_after, limit } => {
+                to_json_binary(&self.all_tokens(deps, start_after, limit)?)
+            }
+            QueryMsg::Minter {} => to_json_binary(&self.minter(deps)?),
         }
+    }
+
+    pub fn minter(&self, deps: Deps) -> StdResult<MinterResponse> {
+        let minter = cw_ownable::get_ownership(deps.storage)?
+            .owner
+            .map(|a| a.into_string());
+
+        Ok(MinterResponse { minter })
+    }
+    pub fn ownership(deps: Deps) -> StdResult<cw_ownable::Ownership<Addr>> {
+        cw_ownable::get_ownership(deps.storage)
     }
 }
 
