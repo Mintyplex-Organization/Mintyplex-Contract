@@ -55,6 +55,14 @@ where
                 recipient,
                 token_id,
             } => self.transfer_nft(deps, env, info, recipient, token_id),
+            ExecuteMsg::Approve {
+                spender,
+                token_id,
+                expires,
+            } => self.approve(deps, env, info, spender, token_id, expires),
+            ExecuteMsg::Revoke { spender, token_id } => {
+                self.revoke(deps, env, info, spender, token_id)
+            }
         }
     }
 }
@@ -228,7 +236,7 @@ where
         self._update_approvals(deps, &env, &info, &spender, &token_id, false, None)?;
 
         Ok(Response::new()
-            .add_attribute("action", "revoke")
+            .add_attribute("action", "approve")
             .add_attribute("sender", info.sender)
             .add_attribute("spender", spender)
             .add_attribute("token_id", token_id))

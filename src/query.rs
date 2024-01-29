@@ -1,4 +1,6 @@
-use cosmwasm_std::{Addr, BlockInfo, CustomMsg, Deps, Env, Order, StdError, StdResult};
+use cosmwasm_std::{
+    to_json_binary, Addr, Binary, BlockInfo, CustomMsg, Deps, Env, Order, StdError, StdResult,
+};
 use cw721::{
     AllNftInfoResponse, Approval, ApprovalResponse, ApprovalsResponse, ContractInfoResponse,
     Cw721Query, NftInfoResponse, NumTokensResponse, OperatorResponse, OperatorsResponse,
@@ -10,7 +12,10 @@ use cw_ownable::Expiration;
 use cw_storage_plus::Bound;
 use serde::{de::DeserializeOwned, Serialize};
 
-use crate::state::{MintyPlexContract, TokenInfo};
+use crate::{
+    msg::QueryMsg,
+    state::{MintyPlexContract, TokenInfo},
+};
 
 const DEFAULT_LIMIT: u32 = 10;
 const MAX_LIMIT: u32 = 1000;
@@ -234,6 +239,33 @@ where
                 extension: info.extension,
             },
         })
+    }
+}
+
+impl<'a, T, C, E, Q> MintyPlexContract<'a, T, C, E, Q>
+where
+    T: Serialize + DeserializeOwned + Clone,
+    C: CustomMsg,
+    E: CustomMsg,
+    Q: CustomMsg,
+{
+    pub fn query(&self, deps: Deps, env: Env, msg: QueryMsg<Q>) -> StdResult<Binary> {
+        match msg {
+            QueryMsg::OwnerOf {
+                token_id,
+                include_expired,
+            } => to_json_binary(&self.owner_of(
+                deps,
+                env,
+                token_id,
+                include_expired.unwrap_or(false),
+            )?),
+            QueryMsg::GetCount {} => todo!(),
+            QueryMsg::ContractInfo {} => todo!(),
+            QueryMsg::NftInfo { token_id } => todo!(),
+            QueryMsg::Extension { msg } => todo!(),
+            QueryMsg::Ownership {} => todo!(),
+        }
     }
 }
 
