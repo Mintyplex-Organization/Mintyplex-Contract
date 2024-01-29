@@ -279,168 +279,18 @@ fn transferring_nft() {
     );
 }
 
-// #[test]
-// fn approving_revoking() {
-//     let mut deps = mock_dependencies();
-//     let contract = setup_contract(deps.as_mut());
-
-//     // mint a token
-//     let token_id = "minty".to_string();
-//     let token_uri = "https://mintyplex.com/minty".to_string();
-
-//     let mint_msg = ExecuteMsg::Mint {
-//         token_id: token_id.clone(),
-//         owner: String::from("people"),
-//         token_uri: Some(token_uri),
-//         extension: None,
-//     };
-
-//     let minter = mock_info(MINTER, &[]);
-//     contract
-//         .execute(deps.as_mut(), mock_env(), minter, mint_msg)
-//         .unwrap();
-
-//     // Token owner shows in approval query
-//     let res = contract
-//         .approval(
-//             deps.as_ref(),
-//             mock_env(),
-//             token_id.clone(),
-//             String::from("people"),
-//             false,
-//         )
-//         .unwrap();
-
-//     assert_eq!(
-//         res,
-//         ApprovalResponse {
-//             approval: Approval {
-//                 spender: String::from("people"),
-//                 expires: Expiration::Never {}
-//             }
-//         }
-//     );
-
-//     //  give odogwu transferring power
-
-//     let approve_msg = ExecuteMsg::Approve {
-//         spender: String::from("odogwu"),
-//         token_id: token_id.clone(),
-//         expires: None,
-//     };
-
-//     let owner = mock_info("kachi", &[]);
-
-//     let res = contract
-//         .execute(deps.as_mut(), mock_env(), owner, approve_msg)
-//         .unwrap();
-//     assert_eq!(
-//         res,
-//         Response::new()
-//             .add_attribute("action", "approve")
-//             .add_attribute("sender", "odogwu")
-//             .add_attribute("spender", "kachi")
-//             .add_attribute("token_id", token_id.clone())
-//     );
-
-//     // test approval query
-//     let res = contract
-//         .approval(
-//             deps.as_ref(),
-//             mock_env(),
-//             token_id.clone(),
-//             String::from("random"),
-//             true,
-//         )
-//         .unwrap();
-//     assert_eq!(
-//         res,
-//         ApprovalResponse {
-//             approval: Approval {
-//                 spender: String::from("random"),
-//                 expires: Expiration::Never {}
-//             }
-//         }
-//     );
-
-//     // random can now transfer
-//     let random = mock_info("random", &[]);
-//     let transfer_msg = ExecuteMsg::TransferNft {
-//         recipient: String::from("person"),
-//         token_id: token_id.clone(),
-//     };
-//     contract
-//         .execute(deps.as_mut(), mock_env(), random, transfer_msg)
-//         .unwrap();
-
-//     let query_msg = QueryMsg::OwnerOf {
-//         token_id: token_id.clone(),
-//         include_expired: None,
-//     };
-
-//     let res: OwnerOfResponse = from_json(
-//         contract
-//             .query(deps.as_ref(), mock_env(), query_msg.clone())
-//             .unwrap(),
-//     )
-//     .unwrap();
-
-//     assert_eq!(
-//         res,
-//         OwnerOfResponse {
-//             owner: String::from("person"),
-//             approvals: vec![]
-//         }
-//     );
-
-//     // Approve, revoke, and check for empty, to test revoke
-//     let approve_msg = ExecuteMsg::Approve {
-//         spender: String::from("mua"),
-//         token_id: token_id.clone(),
-//         expires: None,
-//     };
-
-//     let owner = mock_info("person", &[]);
-//     contract
-//         .execute(deps.as_mut(), mock_env(), owner.clone(), approve_msg)
-//         .unwrap();
-
-//     let revoke_msg = ExecuteMsg::Revoke {
-//         spender: String::from("mua"),
-//         token_id: token_id.clone(),
-//     };
-//     contract
-//         .execute(deps.as_mut(), mock_env(), owner, revoke_msg)
-//         .unwrap();
-
-//     // Approvals are now removed and cleared
-//     let res: OwnerOfResponse = from_json(
-//         contract
-//             .query(deps.as_ref(), mock_env(), query_msg)
-//             .unwrap(),
-//     )
-//     .unwrap();
-//     assert_eq!(
-//         res,
-//         OwnerOfResponse {
-//             owner: String::from("person"),
-//             approvals: vec![]
-//         }
-//     );
-// }
-
 #[test]
-fn approvings_revoking() {
+fn approving_revoking() {
     let mut deps = mock_dependencies();
     let contract = setup_contract(deps.as_mut());
 
-    // Mint a token
-    let token_id = "grow".to_string();
-    let token_uri = "https://www.merriam-webster.com/dictionary/grow".to_string();
+    // mint a token
+    let token_id = "minty".to_string();
+    let token_uri = "https://mintyplex.com/minty".to_string();
 
     let mint_msg = ExecuteMsg::Mint {
         token_id: token_id.clone(),
-        owner: String::from("demeter"),
+        owner: String::from("people"),
         token_uri: Some(token_uri),
         extension: None,
     };
@@ -450,33 +300,37 @@ fn approvings_revoking() {
         .execute(deps.as_mut(), mock_env(), minter, mint_msg)
         .unwrap();
 
-    // token owner shows in approval query
+    // Token owner shows in approval query
     let res = contract
         .approval(
             deps.as_ref(),
             mock_env(),
             token_id.clone(),
-            String::from("demeter"),
+            String::from("people"),
             false,
         )
         .unwrap();
+
     assert_eq!(
         res,
         ApprovalResponse {
             approval: Approval {
-                spender: String::from("demeter"),
+                spender: String::from("people"),
                 expires: Expiration::Never {}
             }
         }
     );
 
-    // Give random transferring power
+    //  give odogwu transferring power
+
     let approve_msg = ExecuteMsg::Approve {
-        spender: String::from("random"),
+        spender: String::from("odogwu"),
         token_id: token_id.clone(),
         expires: None,
     };
-    let owner = mock_info("demeter", &[]);
+
+    let owner = mock_info("people", &[]);
+
     let res = contract
         .execute(deps.as_mut(), mock_env(), owner, approve_msg)
         .unwrap();
@@ -484,8 +338,93 @@ fn approvings_revoking() {
         res,
         Response::new()
             .add_attribute("action", "approve")
-            .add_attribute("sender", "demeter")
-            .add_attribute("spender", "random")
+            .add_attribute("sender", "people")
+            .add_attribute("spender", "odogwu")
             .add_attribute("token_id", token_id.clone())
+    );
+
+    // test approval query
+    let res = contract
+        .approval(
+            deps.as_ref(),
+            mock_env(),
+            token_id.clone(),
+            String::from("people"),
+            true,
+        )
+        .unwrap();
+    assert_eq!(
+        res,
+        ApprovalResponse {
+            approval: Approval {
+                spender: String::from("people"),
+                expires: Expiration::Never {}
+            }
+        }
+    );
+
+    // random can now transfer
+    let random = mock_info("people", &[]);
+    let transfer_msg = ExecuteMsg::TransferNft {
+        recipient: String::from("person"),
+        token_id: token_id.clone(),
+    };
+    contract
+        .execute(deps.as_mut(), mock_env(), random, transfer_msg)
+        .unwrap();
+
+    let query_msg = QueryMsg::OwnerOf {
+        token_id: token_id.clone(),
+        include_expired: None,
+    };
+
+    let res: OwnerOfResponse = from_json(
+        contract
+            .query(deps.as_ref(), mock_env(), query_msg.clone())
+            .unwrap(),
+    )
+    .unwrap();
+
+    assert_eq!(
+        res,
+        OwnerOfResponse {
+            owner: String::from("person"),
+            approvals: vec![]
+        }
+    );
+
+    // Approve, revoke, and check for empty, to test revoke
+    let approve_msg = ExecuteMsg::Approve {
+        spender: String::from("mua"),
+        token_id: token_id.clone(),
+        expires: None,
+    };
+
+    let owner = mock_info("person", &[]);
+    contract
+        .execute(deps.as_mut(), mock_env(), owner.clone(), approve_msg)
+        .unwrap();
+
+    let revoke_msg = ExecuteMsg::Revoke {
+        spender: String::from("mua"),
+        token_id: token_id.clone(),
+    };
+    contract
+        .execute(deps.as_mut(), mock_env(), owner, revoke_msg)
+        .unwrap();
+
+    // Approvals are now removed and cleared
+    let res: OwnerOfResponse = from_json(
+        contract
+            .query(deps.as_ref(), mock_env(), query_msg)
+            .unwrap(),
+    )
+    .unwrap();
+    assert_eq!(
+        res,
+        OwnerOfResponse {
+            owner: String::from("person"),
+            approvals: vec![]
+        }
     );
 }
