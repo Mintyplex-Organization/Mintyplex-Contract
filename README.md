@@ -1,3 +1,9 @@
+# Setup
+
+## Open with Gitpod
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/Mintyplex-Organization/Mintyplex-Contract)
+
+
 # NFT Contract UML Diagrams
 
 This README provides a detailed explanation of the UML diagrams for the NFT Contract. The diagrams are located in the `out/diagrams` directory.
